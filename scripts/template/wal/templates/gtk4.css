@@ -1,0 +1,30 @@
+@define-color accent_color {color2};
+@define-color accent_bg_color {color2};
+@define-color window_bg_color {color0};
+@define-color window_fg_color {color7};
+@define-color view_bg_color {color0};
+@define-color headerbar_bg_color {color0};
+@define-color borders {color8};
+
+window, .background, stack {{
+    background-color: {color0};
+    color: {color7};
+}}
+
+headerbar, .titlebar {{
+    background-color: {color0};
+    color: {color7};
+}}
+
+scale trough {{ background-color: {color0}; border-radius: 6px; }}
+scale trough > fill {{ background-color: {color2}; border-radius: 6px; }}
+scale trough > highlight {{ background-color: {color2}; border-radius: 6px; }}
+scale trough > slider {{ background-color: {color7}; border-radius: 50%; min-width: 18px; min-height: 18px; }}
+
+tabbar tab {{ background-color: {color0}; box-shadow: none; }}
+tabbar tab:checked {{ box-shadow: {color2} 0 -3px inset; }}
+
+row:selected, *:selected {{ background-color: {color2}; color: {color7}; }}
+scrollbar slider {{ background-color: {color2}; }}
+popover, .popover {{ background-color: {color0}; border-color: {color8}; }}
+* {{ outline-color: {color2}; caret-color: {color2}; }}
