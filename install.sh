@@ -6,16 +6,16 @@ set -e
 source "./utils.sh"
 
 dir_dot_conf="$HOME/.config"
-dir_hypr=$HOME/.config/hypr
+dir_hypr=$dir_dot_conf/hypr
 dir_hypr_conf="$dir_hypr/hyprland.lua"
 dir_hypr_colors="$dir_hypr/config/"
 dir_user_wallpaper="$HOME/Pictures/Wallpapers"
-dir_wal_templates="$HOME/.config/wal"
-dir_kvantum_pywal="$HOME/.config/Kvantum/pywal"
-dir_qt="$HOME/.config/qt6ct"
+dir_wal_templates="$dir_dot_conf/wal"
+dir_kvantum_pywal="$dir_dot_conf/Kvantum/pywal"
+dir_qt="$dir_dot_conf/qt6ct"
 dir_qt6ct_colors="$dir_qt/colors"
 qt6ct_conf="$dir_qt/qt6ct.conf"
-kitty_conf="$HOME/.config/kitty/kitty.conf"
+kitty_conf="$dir_dot_conf/kitty/kitty.conf"
 
 echo "$dir_dot_conf"
 
@@ -118,11 +118,37 @@ else
     log_info "Skipping colors in Hyprland configuration."
 fi
 
+# -------------------------------------------------------------
+# Set up shortcut to change the theme in the Hyprland configuration
+# -------------------------------------------------------------
+log_step "Set up a shortcut to change the theme in the Hyprland configuration"
+if ask_yes_no "Do you want to configure a shortcut to change the theme?"; then
+    TARGET_FILE=$(grep -rl "hl.bind" "$dir_hypr" | head -n 1)
+
+    if [ -n "$TARGET_FILE" ]; then
+        # Check if the keybind combination (SHIFT + T) or the theme folder already exists
+        if ! grep -q -E "SHIFT \+ T|theme-sw1tcher" "$TARGET_FILE"; then
+            # Insert the new bind exactly above the first occurrence of "hl.bind"
+            sed -i '0,/hl.bind/{s/hl.bind/hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("sh ~\/.config\/theme-sw1tcher\/theme-sw1tcher.sh"))\nhl.bind/}' "$TARGET_FILE"
+            
+            log_success "Successfully added theme shortcut to: ${BLUE}${TARGET_FILE}${NC}"
+            log_success "--> ${BLUE}${BOLD}\"hl.bind(mainMod .. \" + SHIFT + T\", ...)\"${NC}"
+        else
+            log_info "Theme switcher shortcut or SHIFT+T bind already exists in ${BLUE}${TARGET_FILE}${NC}, skipping."
+            log_info "Add manually a keyboard shortcut to your Hyprland configuration --> ${BLUE}${BOLD}\"hl.bind(mainMod .. \" + SHIFT + T\", hl.dsp.exec_cmd(\"sh ~/.config/theme-sw1tcher/theme-sw1tcher.sh\"))\"${NC}"
+        fi
+    else
+        log_warn "No active configuration file with 'hl.bind' was found in $dir_hypr\nAdd manually a keyboard shortcut to your Hyprland configuration --> ${BLUE}${BOLD}\"hl.bind(mainMod .. \" + SHIFT + T\", hl.dsp.exec_cmd(\"sh ~/.config/theme-sw1tcher/theme-sw1tcher.sh\"))\"${NC}"
+    fi
+else
+    log_info "Skipping colors in Hyprland configuration."
+fi
+
 echo ""
-echo "🎉 Pywal Setup complete!"
+echo "🎉 Theme Sw1tcher Setup complete!"
 echo ""
 echo "Remaining manual checklist:"
 echo " 1. Copy your wallpapers to $dir_user_wallpaper"
 echo " 2. Run "$dir_dot_conf/theme-sw1tcher/theme-sw1tcher.sh" to test"
-echo -e " 3. Add a keyboard shortcut to switch themes --> ${BLUE}${BOLD}\"hl.bind(mainMod .. " + SHIFT + T", hl.dsp.exec_cmd("sh ~/.config/hypr/scripts/theme-sw1tch.sh"))\"${NC}"
+echo "Enjoy"
 echo ""
