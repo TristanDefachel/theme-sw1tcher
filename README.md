@@ -6,6 +6,8 @@
 # About
 **Theme Sw1tcher** is a small script that extracts the colors from the current wallpaper and applies them to all applications in the environment.
 
+If you like it, star the repo ⭐
+
 # Preview
 ![Screenshot Switch theme](screenshots/screenshot_theme_switch.jpg)
 
